@@ -3,6 +3,8 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks)
     n_lines = 280691306;
     block_size = 10000;
     total_blocks = ceil(n_lines / block_size);
+
+    disp('blabla');
     
     time_idx = 1;
     hl_idx = 2;
