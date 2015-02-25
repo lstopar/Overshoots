@@ -10,10 +10,6 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
         n_blocks = total_blocks;
     end
     
-    if block_size < 0
-        block_size = 10000;
-    end
-    
     disp(['Block size: ',num2str(block_size)]);
     disp(['Total blocks: ',num2str(total_blocks),', processing ',num2str(n_blocks),' blocks ...']);
     
