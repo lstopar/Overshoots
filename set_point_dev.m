@@ -1,10 +1,21 @@
-function [X, y] = set_point_dev(fname,start_block,n_blocks)
+function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
     format long g
     n_lines = 280691306;
-    block_size = 10000;
+    if block_size < 0
+        block_size = n_lines;
+    end
     total_blocks = ceil(n_lines / block_size);
 
-    disp('blabla');
+    if n_blocks < 0
+        n_blocks = total_blocks;
+    end
+    
+    if block_size < 0
+        block_size = 10000;
+    end
+    
+    disp(['Block size: ',num2str(block_size)]);
+    disp(['Total blocks: ',num2str(total_blocks),', processing ',num2str(n_blocks),' blocks ...']);
     
     time_idx = 1;
     hl_idx = 2;
@@ -159,7 +170,6 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks)
             preprocess_example(block(example_idx,:), (block_idx-1)*block_size + example_idx);
         end
     end
-    save X
     %w = (X'*X)\(X'*y);
     
 %     plot_graph(B(B(:,1) ~= 0,:)); 
