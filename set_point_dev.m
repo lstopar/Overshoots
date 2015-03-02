@@ -17,10 +17,10 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
     
     time_idx = 1;
     hl_idx = 2;
-    mru_pos_idx = 3;
-    mru_vel_idx = 4;
-    pos_meas_idx = 5;
-    pos_set_idx = 6;
+    mru_pos_idx = 10;
+    mru_vel_idx = 11;
+    pos_meas_idx = 12;
+    pos_set_idx = 13;
     
 %     window_size = 3;
     window = [];
@@ -93,10 +93,10 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
                 y = [y;M, ST];
                 X = [X;B(find_U(end,1),6:8), average_speed];
                 
-%                 plot(u2mTime(B(B_idx,1)), B(B_idx,2), 'g*')
-%                 hold on
-%                 plot(u2mTime(B(B_idx,1)), B(B_idx,4), 'r*')
-%                 plot(u2mTime(B(find_U(end,1),1)), B(find_U(end,1),2), 'b*')
+                plot(u2mTime(B(B_idx,1)), B(B_idx,2), 'g*')
+                hold on
+                plot(u2mTime(B(B_idx,1)), B(B_idx,4), 'r*')
+                plot(u2mTime(B(find_U(end,1),1)), B(find_U(end,1),2), 'b*')
             end
         end
         
@@ -134,10 +134,10 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
                 y = [y;M, ST];
                 X = [X;B(find_L(end,1), 6:8), average_speed];
                 
-%                 plot(u2mTime(B(B_idx,1)), B(B_idx,2), 'm*')
-%                 hold on
-%                 plot(u2mTime(B(B_idx,1)), B(B_idx,4), 'r*')
-%                 plot(u2mTime(B(find_L(end,1),1)), B(find_L(end,1),2), 'b*') 
+                plot(u2mTime(B(B_idx,1)), B(B_idx,2), 'm*')
+                hold on
+                plot(u2mTime(B(B_idx,1)), B(B_idx,4), 'r*')
+                plot(u2mTime(B(find_L(end,1),1)), B(find_L(end,1),2), 'b*') 
             end    
         end
     end
@@ -169,7 +169,7 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
             preprocess_example(block(example_idx,:), (block_idx-1)*block_size + example_idx);
         end
     end
-    %w = (X'*X)\(X'*y);
     
-%     plot_graph(B(B(:,1) ~= 0,:)); 
+    
+    plot_graph(B(B(:,1) ~= 0,:)); 
 end
