@@ -22,10 +22,10 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
     pos_meas_idx = 12;
     pos_set_idx = 13;
     
-%     window_size = 3;
+    window_size = 3;
     window = [];
     set_vel = 0;
-%     prev_example = 0;
+    prev_example = 0;
     speed = 400;
     dev = zeros(block_size*(n_blocks+1),1);
     B = zeros(block_size*(n_blocks+1),9);
@@ -35,7 +35,6 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
     function [i] = get_B_idx(idx)
         i = idx - (start_block-1)*block_size;
     end
-
 
     function plot_graph(B)
         plot(u2mTime(B(:,1)), B(:,4), 'g'); %vel_set
@@ -142,7 +141,6 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
         end
     end
 
-
     function preprocess_example(example, idx)
         window = [window; example];
         
@@ -158,18 +156,16 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
         end
     end
 
-
     % main loop
     for block_idx = start_block:start_block+n_blocks - 1;
         disp(['Reading block: ',num2str(block_idx)]);
-        block = csvread(fname, (block_idx-1)*block_size+1, 0, [(block_idx-1)*block_size+1, 0, block_idx*block_size, 7]);       
+        block = csvread(fname, (block_idx-1)*block_size+1, 0, [(block_idx-1)*block_size+1, 0, block_idx*block_size, 12]);       
         disp('Processing ...');
         
         for example_idx = 1:size(block,1)
             preprocess_example(block(example_idx,:), (block_idx-1)*block_size + example_idx);
         end
     end
-    
     
     plot_graph(B(B(:,1) ~= 0,:)); 
 end
