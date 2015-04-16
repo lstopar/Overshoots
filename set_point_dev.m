@@ -1,9 +1,11 @@
 function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
-    n_lines = 253070574;
+    n_lines = 268435168;
+    max_block_size = n_lines-100;
     format long g
     
     if block_size < 0
-        block_size = n_lines;
+        block_size = ceil(max_block_size / n_blocks);
+%         block_size = max_block_size;
     end
     total_blocks = floor(n_lines / block_size);
 
@@ -165,10 +167,13 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
     % main loop
     for block_idx = start_block:start_block+n_blocks - 1;
         disp(['Reading block: ',num2str(block_idx)]);
-        block = csvread(fname, (block_idx-1)*block_size+1, 0, [(block_idx-1)*block_size+1, 0, block_idx*block_size, 12]);       
+        block = csvread(fname, (block_idx-1)*block_size+1, 0, [(block_idx-1)*block_size+1, 0, min(block_idx*block_size, max_block_size-1), 12]);       
         disp('Processing ...');
         
         for example_idx = 1:size(block,1)
+            if mod(example_idx, 1000) == 0
+                disp(num2str(example_idx));
+            end
             preprocess_example(block(example_idx,:), (block_idx-1)*block_size + example_idx);
         end
     end
