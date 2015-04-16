@@ -1,3 +1,4 @@
+%%
 sum = 0;
 j = 0;
 k = 0;
@@ -18,10 +19,12 @@ isDrilling = false;
 %     M = csvread(['drilling-',num2str(g),'new.csv'], 1, 0);
     
     [p, q] = size(M);
-    
-    disp(['Calculating coefficients of file: ',num2str(g)]);
-   
+       
     for i = 1:(p-1)
+        if mod(i, 10000) == 0
+            disp(num2str(i));
+        end
+        
         t = M(i,1);
         hook_load = M(i,2);
         swivel_oil_T = M(i,4);

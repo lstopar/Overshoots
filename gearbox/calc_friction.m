@@ -37,7 +37,6 @@ function [coeffs] = calc_friction(data, alpha, intervals, I2)
              T_gain = T_gain + (T(k+1) - T(k));
          end
 
-    %     c = 0.0188;
          c = (T_gain*Q + E_l) / E_in;    
      end
  
