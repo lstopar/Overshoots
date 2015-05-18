@@ -66,6 +66,7 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
 %         B(B_idx,11) = (B(B_idx,5) == 0);
         
         %upper overshoot
+        %upper overshoot
         if (B(B_idx,4)<5) && (sign(dev(B_idx)) ~= sign(dev(B_idx-1))) && (sign(dev(B_idx-1))~=0) 
             if sum(B(max(1,B_idx-200):B_idx,10))>40
                     
@@ -76,6 +77,7 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
                         find_U(k,:) = [B_idx-k, dev(B_idx-k)];                        
                     end
                 end
+                
                 find_U(~any(find_U,2),:) = [];
                 
                 if size(find_U,1)==0
@@ -83,6 +85,7 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
                 end
                 
                 ST = B(B_idx,1) - B(find_U(end,1));
+                
                 if (ST<4) || (B(B_idx,2)<B(find_U(end,1),2))
                     return
                 end
@@ -122,10 +125,11 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
                     return
                 end
                 
-                ST = B(B_idx,1) - B(find_L(end,1),1); %settling time
                 if sum(B(max(1,find_L(1,1)-300):find_L(1,1),12))>10
                     return
                 end
+                
+                ST = B(B_idx,1) - B(find_L(end,1),1); %settling time
                 
                 if (B_idx-find_L(1,1)<15) || (B(B_idx,2)>B(find_L(end,1),2))
                     return
@@ -136,6 +140,7 @@ function [X, y] = set_point_dev(fname,start_block,n_blocks, block_size)
                     a_s = a_s + B(a,4);
                 end
                 average_speed = a_s/150;
+                
                 [M, ~] = min(find_L(:,2));
                 
                 y = [y;M, ST];
