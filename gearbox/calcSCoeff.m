@@ -1,4 +1,4 @@
-function [coefficients] = calcSCoeff(M)
+function [s_coefficients] = calcSCoeff(M)
     L = +6.5e-08;
     a = -1.3;
     
@@ -8,7 +8,7 @@ function [coefficients] = calcSCoeff(M)
     stop_T = 0;
     isDrilling = false;
     j = 0;
-    coefficients = [];
+    s_coefficients = [];
     sum_dT = 0;
     sum_E_l = 0;
     sum_E_in = 0;
@@ -16,11 +16,17 @@ function [coefficients] = calcSCoeff(M)
     for i = 1:length(M) - 1
         t = (M(i,1) + M(i+1,1)) / 2;
         dt = M(i+1,1) - M(i,1);
-        T = (M(i+1,7) + M(i,7)) / 2;
+%         T = (M(i+1,7) + M(i,7)) / 2;
+%         dT = M(i+1,7) - M(i,7);
+%         rpm = (M(i,9) + M(i+1,9)) / (2 * 60000);
+%         torque = (M(i,11) + M(i+1,11)) * 1000 / 2;
+%         T_a = (M(i,10) + M(i+1,10)) / 2;
+        T = M(i,7);
         dT = M(i+1,7) - M(i,7);
-        rpm = (M(i,9) + M(i+1,9)) / (2 * 60000);
-        torque = (M(i,11) + M(i+1,11)) * 1000 / 2;
-        T_a = (M(i,10) + M(i+1,10)) / 2;
+        rpm = M(i,9) / 60000;
+        torque = M(i,11) * 1000;
+        T_a = M(i,10);
+        
 
             if rpm*torque > 7 %RPM*torque>1000 (units from measurments)
                 %avg or not?
@@ -46,11 +52,11 @@ function [coefficients] = calcSCoeff(M)
                     j = j + 1;
                     c = (sum_dT + sum_E_l) / sum_E_in;
                     avg_T = (start_T + stop_T)/2; 
-                    coefficients(j,1) = c;
-                    coefficients(j,2) = avg_T;
-                    coefficients(j,3) = stop-start;
-                    coefficients(j,4) = start;
-                    coefficients(j,5) = i;
+                    s_coefficients(j,1) = c;
+                    s_coefficients(j,2) = avg_T;
+                    s_coefficients(j,3) = stop-start;
+                    s_coefficients(j,4) = start;
+                    s_coefficients(j,5) = stop;
                     
                     check_c(c,avg_T,start,stop)
 

@@ -1,13 +1,13 @@
 clear
 A = [];
-for i = [0:13]
+for i = [0:10 14:20 26 33:39 45:47 53]
     i
     if i < 10
-        load(['drilling-high-coeff-00',num2str(i),'.mat'], 'M')
+        load(['C:\Users\Miha\Documents\ProaSense\drilling-2015-00',num2str(i),'.mat'], 'M')
     else
-        load(['drilling-high-coeff-0',num2str(i),'.mat'], 'M')
+        load(['C:\Users\Miha\Documents\ProaSense\drilling-2015-0',num2str(i),'.mat'], 'M')
     end
-    [coefficients] = calcSCoeff(M);
-    A = [A; coefficients];
+    [g_coefficients] = calcGCoeff(M);
+    A = [A; g_coefficients];
     clear M
 end
