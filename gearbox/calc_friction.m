@@ -49,68 +49,66 @@ function [coeffs] = calc_friction(data, alpha, intervals, I2)
  
     c = mean(coeffs(4:end));    
 
-     disp('Got the coefficient, evaluate ...');
+    disp('Got the coefficient, evaluate ...');
+    % simulate the temperature
+    % start with the starting temperature
+    X = data(I2,:);
 
-     % simulate the temperature
-     % start with the starting temperature
-     X = data(I2,:);
+    t = X(:,1)/1000;
+    rpm = X(:,6) / (60);
+    torque = X(:,8) * 1000;
+    T = X(:,4);
+    T_a = X(:,7);
 
-     t = X(:,1)/1000;
-     rpm = X(:,6) / (60);
-     torque = X(:,8) * 1000;
-     T = X(:,4);
-     T_a = X(:,7);
+    m = length(t);
 
-     m = length(t);
+    T_sim = zeros(m,1);
 
-     T_sim = zeros(m,1);
+    T_curr = T(1);
+    T_sim(1) = T_curr;
 
-     T_curr = T(1);
-     T_sim(1) = T_curr;
+    for i = 1:m-1
+        delta_T = T_curr - T_a(i);
+        dt = t(i+1) - t(i);
 
-     for i = 1:m-1
-         delta_T = T_curr - T_a(i);
+        E_l = get_El(T(i), delta_T, dt);
+        P_l = E_l / dt;
 
-         dt = t(i+1) - t(i);
+        P_in = 2*pi*torque(i)*rpm(i);
 
-         E_l = get_El(T(i), delta_T, dt);
-         P_l = E_l / dt;
+        if mod(i, 20000) == 0
+            disp('========================================');
+            disp(['delta_T: ',num2str(delta_T)]);
+            disp(['E_l: ',num2str(E_l)]);
+            disp(['P_l: ',num2str(P_l)]);
+            disp(['P_f: ',num2str(c*P_in)]);
+            disp('========================================');
+        end
 
-         P_in = 2*pi*torque(i)*rpm(i);
-
-         if mod(i, 20000) == 0
-             disp('========================================');
-             disp(['delta_T: ',num2str(delta_T)]);
-             disp(['E_l: ',num2str(E_l)]);
-             disp(['P_l: ',num2str(P_l)]);
-             disp(['P_f: ',num2str(c*P_in)]);
-             disp('========================================');
-         end
-
-         T_curr = T_curr + (c*dt*P_in - E_l) / Q;
-         T_sim(i+1) = T_curr;
-     end
+        T_curr = T_curr + (c*dt*P_in - E_l) / Q;
+        T_sim(i+1) = T_curr;
+    end
      
-     disp('Evaluating the error ...');
+    disp('Evaluating the error ...');
      
-     % compute the error
-     mae = 0;
-     for i = 1:m
-         mae = mae + abs(T(i) - T_sim(i));
-     end
+    % compute the error
+    mae = 0;
+    for i = 1:m
+        mae = mae + abs(T(i) - T_sim(i));
+    end
      
-     mae = mae / m;
+    mae = mae / m;
      
-     disp(['MAE: ',num2str(mae)]);
+    disp(['MAE: ',num2str(mae)]);
 
-     figure;
-     plot(u2mTime(t*1000), rpm*60, 'g', u2mTime(t*1000), T, 'r');
-     hold on;
+    figure;
+    plot(u2mTime(t*1000), rpm*60, 'g', u2mTime(t*1000), T, 'r');
+    hold on;
 %     plot(u2mTime(t_old*1000), T_old, 'rx');
-     plot(u2mTime(t*1000), T_sim, 'b');
-     datetick('x');
-     grid on;
-     hold off;
+    plot(u2mTime(t*1000), T_sim, 'b');
+    datetick('x');
+    grid on;
+    hold off;
 
-     disp('Done!')
+    disp('Done!')
 end
