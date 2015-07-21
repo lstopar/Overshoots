@@ -13,7 +13,9 @@ function [s_coefficients] = calcSCoeff(M)
     sum_E_l = 0;
     sum_E_in = 0;
 
-    for i = 2:length(M)
+    len = size(M,1);
+    
+    for i = 2:len
         t = M(i,1);
         dt = M(i, 1) - M(i-1,1);
         T = M(i,7);
@@ -22,6 +24,9 @@ function [s_coefficients] = calcSCoeff(M)
         torque = M(i,11) * 1000;
         T_a = M(i,10);
         
+        if t == 1387556700762
+            disp('raeched!');
+        end
 
         if rpm*torque >= 7 %RPM*torque>1000 (units from measurments)
             %avg or not?
