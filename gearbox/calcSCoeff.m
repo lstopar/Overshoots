@@ -23,10 +23,6 @@ function [s_coefficients] = calcSCoeff(M)
         rpm = M(i,9) / 60000;
         torque = M(i,11) * 1000;
         T_a = M(i,10);
-        
-        if t == 1387556700762
-            disp('raeched!');
-        end
 
         if rpm*torque >= 7 %RPM*torque>1000 (units from measurments)
             %avg or not?
@@ -40,9 +36,9 @@ function [s_coefficients] = calcSCoeff(M)
 
             c = (sum_dT + sum_E_l) / sum_E_in;
             
-            if mod(i, 10000) == 0
-                disp(['c = ',num2str(c)]);
-            end
+%             if mod(i, 10000) == 0
+%                 disp(['c = ',num2str(c)]);
+%             end
 
             if ~isDrilling 
                 start = t;
@@ -52,7 +48,7 @@ function [s_coefficients] = calcSCoeff(M)
         else
             stop = t;
             stop_T = T;
-            if start > 0 && stop - start >= 5*60*1000
+            if start > 0 && stop - start >= 2000000
                 j = j + 1;
                 c = (sum_dT + sum_E_l) / sum_E_in;
                 avg_T = (start_T + stop_T)/2; 
